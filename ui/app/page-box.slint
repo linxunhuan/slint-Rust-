@@ -9,8 +9,8 @@ import { Home } from "../pages/home/home.slint";
 import { PageType, HistoryStore, PageBoxStore } from "global.slint";
 import { Theme } from "../pages/theme/theme.slint";
 export component PageBox inherits Rectangle {
-    // background: chocolate;
 
+    // 创建一个垂直布局容器，用于组织子组件
     VerticalLayout {
         padding: 30px;
 
@@ -18,12 +18,16 @@ export component PageBox inherits Rectangle {
 
 
         box := Rectangle {
-            clip: true;
+            clip: true; // 启用裁剪，超出容器范围的内容将被隐藏
 
+            // 创建一个水平布局，用于横向排列不同的页面
             HorizontalLayout {
+                
+                // 设置 X 轴位置，根据 PageBoxStore 的 position-offset 动态偏移
+                // 偏移量为 -position-offset 乘以 box 的宽度，实现页面切换效果
                 x: -PageBoxStore.position-offset * box.width;
 
-                alignment: start;
+                alignment: start;   // 设置对齐方式为起始位置（左侧对齐）
 
                 Home {
                     width: 100%;

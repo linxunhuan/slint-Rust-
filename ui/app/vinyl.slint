@@ -1,74 +1,96 @@
 import { QImage } from "../components/qimage.slint";
 import { ScrollView } from "std-widgets.slint";
 import { VinylStore } from "global.slint";
+
 export component Vinyl inherits Rectangle {
-    y: VinylStore.position-y;
-    background: #535252;
-    border-top-left-radius: 10px;
+    
+    y: VinylStore.position-y;   // 设置 y 坐标，根据 VinylStore 的 position 属性动态计算
+    background: #535252;      // 设置背景颜色为深灰色
+    
+    border-top-left-radius: 10px;   // 设置顶部左右圆角为 10px，创建圆角效果
     border-top-right-radius: 10px;
 
+    // 为 y 属性添加动画效果
     animate y {
-         duration: 500ms;
+        duration: 500ms;    // 动画持续时间为 500 毫秒
     }
 
+    // 子矩形，作为主要内容容器
     Rectangle {
         width: 600px;
         height: 400px;
 
-        // background: #fff;
-
+        // 使用水平布局管理子元素
         HorizontalLayout {
-            alignment: stretch;
+            alignment: stretch; // 设置布局对齐方式为拉伸填充
 
+            // 左侧矩形容器
             Rectangle {
+                // 设置水平拉伸系数为 1，与右侧矩形均分空间
                 horizontal-stretch: 1;
 
+                // 唱片样式的圆形容器
                 Rectangle {
                     width: 200px;
                     height: 200px;
-                    background: #000;
-                    border-radius: self.width / 2;
+                    
+                    background: #000;   // 设置黑色背景
+                    border-radius: self.width / 2;  // 设置圆角半径为宽度的一半，形成圆形
 
+                    // 内层圆形容器
                     Rectangle {
                         width: 160px;
                         height: 160px;
-                        border-radius: self.width / 2;
-                        clip: true;
+                        
+                        border-radius: self.width / 2;  // 同上，形成圆形
+                        
+                        clip: true;     // 启用剪切，超出部分将被裁剪
 
-                        // background: #fff;
 
+                        // 显示图片的组件
                         QImage {
-                            width: parent.width;
-                            height: self.width;
+                            
+                            width: parent.width;    // 宽度与父容器一致
+                            height: self.width;     // 高度与宽度保持一致，形成正方形
                             source: @image-url("../../assets/katong8.png");
-                            rotation: 90deg * animation-tick() / 3s;
+                            
+                            rotation: 90deg * animation-tick() / 3s;    // 设置旋转动画，每3秒旋转90度
                         }
                     }
                 }
             }
 
+            // 右侧矩形容器
             Rectangle {
-                horizontal-stretch: 1;
+                
+                horizontal-stretch: 1;  // 设置水平拉伸系数为 1，与左侧矩形均分空间
 
+                // 内容显示区域
                 Rectangle {
                     width: 200px;
 
+                    // 使用垂直布局管理子元素
                     VerticalLayout {
-                        alignment: stretch;
-                        spacing: 20px;
+                        
+                        alignment: stretch; // 设置布局对齐方式为拉伸填充
+                        spacing: 20px;      // 子元素间距为 20px
 
                         Text {
-                            text: "晴天";
-                            font-size: 20px;
-                            color: #fff;
+                            text: "晴天";           
+                            font-size: 20px;        
+                            color: #fff;           
                         }
 
+                        // 包含滚动视图的矩形容器
                         Rectangle {
-
+                            // 滚动视图组件
                             ScrollView {
+                                // 始终隐藏垂直滚动条
                                 vertical-scrollbar-policy: always-off;
 
+                                // 滚动内容区域的垂直布局
                                 VerticalLayout {
+                                    // 子元素间距为 5px
                                     spacing: 5px;
 
                                     for item in [

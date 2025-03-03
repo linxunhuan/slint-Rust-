@@ -1,32 +1,42 @@
 import { QTouchArea } from "qtoucharea.slint";
+
 export component Icon inherits Rectangle {
-    in property <image> source;
-    callback clicked();
-    in property <brush> colorize;
+    
+    in property <image> source; // 定义输入属性 source，用于指定图标的图片来源（类型为 image）
+    
+    callback clicked();         // 定义一个回调函数 clicked，当图标被点击时会被触发
+    
+    in property <brush> colorize;   // 定义输入属性 colorize，用于设置图标的着色（类型为 brush，比如颜色值）
 
     width: 14px;
 
+    // 定义一个水平布局，用于在水平方向上居中排列内容
     HorizontalLayout {
-        alignment: center;
+        
+        alignment: center;  
 
+        // 定义一个垂直布局，用于在垂直方向上居中排列内容
         VerticalLayout {
             alignment: center;
 
+            // 定义一个图片元素，用于显示图标
             Image {
-                width: root.width;
-                height: self.width;
-                source: root.source;
-                colorize: root.colorize;
+                
+                width: root.width;  // 设置图片宽度等于根节点的宽度（即 14px）
+                height: self.width; // 设置图片高度等于其自身的宽度，形成正方形
+                source: root.source;    // 指定图片的来源，使用根节点的 source 属性
+                colorize: root.colorize;    // 设置图片的着色效果，使用根节点的 colorize 属性
             }
         }
     }
 
+    // 定义一个触摸区域，用于处理点击事件
     QTouchArea {
         mouse-cursor: pointer;
 
         clicked => {
+            // 当触摸区域被点击时，触发根节点的 clicked 回调函数
             root.clicked();
         }
     }
-
 }

@@ -1,26 +1,35 @@
 import { QTouchArea } from "qtoucharea.slint";
+
 export component Carousel inherits Rectangle {
-    in-out property <int> current-index;
-    in property <int> count: 7;
-    in property <int> size: 4;
-    in property <length> delta: root.width;
-    in property <length> spacing: 20px;
+    
+    in-out property <int> current-index;    // 定义一个双向绑定的属性 current-index，用于追踪当前显示的轮播项索引
+    in property <int> count: 7;             // 定义输入属性 count，表示轮播图中总共有多少项，默认值为 7
+    in property <int> size: 4;              // 定义输入属性 size，表示轮播图一次显示的项数，默认值为 4
+    in property <length> delta: root.width; // 定义输入属性 delta，表示每次滑动的距离，默认等于根节点的宽度
+    in property <length> spacing: 20px;     // 定义输入属性 spacing，表示轮播项之间的间距，默认值为 20 像素
 
-    preferred-width: 500px;
-    preferred-height: 200px;
-    clip: true;
+    
+    preferred-width: 500px;     // 设置轮播图的首选宽度为 500 像素
+    preferred-height: 200px;    // 设置轮播图的首选高度为 200 像素
+    clip: true;                 // 启用裁剪，超出边界的部分将被裁掉
 
-
+    // 定义一个水平布局，用于排列轮播项
     HorizontalLayout {
-        x: -root.current-index * root.delta;
-        spacing: root.spacing;
+        
+        x: -root.current-index * root.delta;    // 根据当前索引计算 x 坐标，实现滑动效果，负号表示向左移动
+        
+        spacing: root.spacing;                  // 设置轮播项之间的间距，使用根节点的 spacing 属性
+        
+        // 为 x 属性添加动画效果，滑动时平滑过渡，持续时间为 50 毫秒
         animate x {
-             duration: 50ms;
+            duration: 50ms;
         }
+        
+        // 子节点的占位符，允许外部传入具体的轮播项内容
         @children
     }
 
-    
+    // 定义左侧按钮，用于向左滑动轮播图
     left-btn := Rectangle {
         x: 10px;
         z: 100;
@@ -28,22 +37,29 @@ export component Carousel inherits Rectangle {
         height: 40px;
         background: gray;
         opacity: 0.5;
-        border-radius: self.width / 2;
+        border-radius: self.width / 2;  // 设置按钮为圆形，边框半径为宽度的一半
         clip: true;
 
+        // 在按钮内部添加一个图标
         Image {
-            width: parent.width / 2;
-            source: @image-url("../../assets/left-btn.svg");
+            
+            width: parent.width / 2;    // 设置图标宽度为按钮宽度的一半
+            
+            source: @image-url("../../assets/left-btn.svg");    // 指定图标的来源路径，使用相对路径加载左箭头 SVG 文件
             colorize: #fff;
         }
 
+        // 定义触摸区域，用于处理点击事件
         QTouchArea {
             x: 10px;
             width: 100px;
             height: 100px;
             mouse-cursor: pointer;
 
+            // 定义点击事件的行为
             clicked => {
+                
+                // 如果当前索引大于 0（即不是第一项），则向左滑动
                 if root.current-index > 0 {
                     root.current-index -= 1;
                 }
@@ -51,34 +67,43 @@ export component Carousel inherits Rectangle {
         }
     }
 
+    // 定义右侧按钮，用于向右滑动轮播图
     right-btn := Rectangle {
-        x: root.width - right-btn.width - 10px;
-        z: 100;
+        
+        x: root.width - right-btn.width - 10px; // 设置按钮的 x 坐标，使其靠右对齐，距离右侧边缘 10 像素
+       
+        z: 100;              // 设置 z 顺序为 100，确保按钮显示在轮播内容之上
         width: 40px;
         height: 40px;
         background: gray;
         opacity: 0.5;
-        border-radius: self.width / 2;
+        
+        border-radius: self.width / 2;  // 设置按钮为圆形，边框半径为宽度的一半
         clip: true;
 
+        // 在按钮内部添加一个图标
         Image {
-            width: parent.width / 2;
+            
+            width: parent.width / 2;    // 设置图标宽度为按钮宽度的一半
+
             source: @image-url("../../assets/right-btn.svg");
             colorize: #fff;
         }
 
+        // 定义触摸区域，用于处理点击事件
         QTouchArea {
             x: 10px;
             width: 100px;
             height: 100px;
-            mouse-cursor: pointer;
+            mouse-cursor: pointer;  // 将鼠标光标设置为指针形状，表示可点击
 
+            // 定义点击事件的行为
             clicked => {
+                // 如果当前索引小于总项数减去显示项数（即未到最后一页），则向右滑动
                 if root.current-index < root.count - 4 {
                     root.current-index += 1;
                 }
             }
         }
     }
-
 }

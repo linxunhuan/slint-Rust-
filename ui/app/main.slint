@@ -1,18 +1,28 @@
 import { ToolBar } from "toolbar.slint";
 import { PageBox } from "page-box.slint";
 import { ThemeStore } from "global.slint";
+
+
 export component MainBox inherits Rectangle {
+    
+    // 设置矩形右上角的圆角半径为 10 像素
     border-top-right-radius: 10px;
+    
+    // 设置背景颜色，使用 ThemeStore 中定义的 mainbox-background 值
     background: ThemeStore.mainbox-background;
 
+    // 创建一个垂直布局容器，用于组织子组件
     VerticalLayout {
-        padding-top: 25px;
+        padding-top: 25px;  // 设置顶部内边距为 25 像素
         
+        // 定义工具栏组件实例并命名为 toolbar
         toolbar := ToolBar {
             height: 30px;
         }
 
+        // 定义页面内容区域组件实例并命名为 page-box
         page-box := PageBox {
+            // 设置垂直拉伸因子为 1，使该组件在垂直方向上占用剩余可用空间
             vertical-stretch: 1;
         }
     }

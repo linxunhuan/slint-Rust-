@@ -1,10 +1,16 @@
 import { QTouchArea } from "qtoucharea.slint";
+
 export component QInput inherits Rectangle {
-    property <bool> is-show: true;
-    in property <string> placeholder: "请输入内容";
-    callback edited();
-    callback accepted();
-    callback leaved();
+    
+    property <bool> is-show: true;  // 定义一个属性 is-show，用于控制占位符文本是否显示，默认值为 true
+    
+    in property <string> placeholder: "请输入内容"; // 定义输入属性 placeholder，指定占位符文本，默认值为 "请输入内容"
+    
+    callback edited();              // 定义回调函数 edited，当输入内容发生变化时触发
+    
+    callback accepted();            // 定义回调函数 accepted，当输入被接受（例如按下回车键）时触发
+    
+    callback leaved();              // 定义回调函数 leaved，当输入框失去焦点时触发
 
     width: 200px;
     height: 30px;
@@ -13,53 +19,69 @@ export component QInput inherits Rectangle {
     border-color: gray;
     border-width: 1px;
 
+    // 定义一个水平布局，用于排列输入框内部的内容
     HorizontalLayout {
-        padding-left: 10px;
+        
+        padding-left: 10px;        // 设置输入框左侧的填充为 10 像素
 
+        // 定义一个 TextInput 元素，用于接收用户输入，命名为 text-input
         text-input := TextInput {
-            single-line: true;
-            vertical-alignment: center;
+            
+            single-line: true;          // 设置输入框为单行输入
+            vertical-alignment: center; // 设置文本在垂直方向上居中对齐
             font-size: 12px;
             color: gray;
 
+            // 定义焦点状态变化时的行为
             changed has-focus => {
-                if self.has-focus {
-                    root.border-color = Colors.red;
+                
+                if self.has-focus {     // 当输入框获得焦点时
+                    root.border-color = Colors.red; // 将边框颜色设置为红色，表示激活状态
                 } else {
-                    root.border-color = Colors.gray;
-                    if self.text == "" {
+                    // 当输入框失去焦点时
+                    
+                    root.border-color = Colors.gray;    // 将边框颜色恢复为灰色
+                    
+                    if self.text == "" {        // 如果输入框内容为空，则显示占位符
                         root.is-show = true;
                     }
-                    root.leaved();
+                    
+                    root.leaved();      // 触发失去焦点的回调函数
                 }
             }
 
+            // 当输入内容发生变化时，触发根节点的 edited 回调函数
             edited => {
                 root.edited();
             }
 
+            // 当输入被接受（例如按下回车键）时，触发根节点的 accepted 回调函数
             accepted => {
                 root.accepted();
             }
 
+            // 定义按键事件的行为
             key-pressed(event) => {
+                // 当按下任意键时，隐藏占位符
                 root.is-show = false;
-
+                // 拒绝默认按键事件处理（例如避免意外触发其他行为）
                 reject
             }
         }
-        
     }
 
-    if root.is-show: t:=Text {
+    if root.is-show: t := Text {
         x: 10px;
-        text: root.placeholder;
+        text: root.placeholder; // 设置占位符文本内容，使用根节点的 placeholder 属性
         font-size: 12px;
         color: gray;
     }
 
+    // 定义一个触摸区域，覆盖整个输入框，用于处理点击事件
     QTouchArea {
+        // 当触摸区域被点击时
         clicked => {
+            // 将焦点设置到 TextInput 上，激活输入框
             text-input.focus();
         }
     }

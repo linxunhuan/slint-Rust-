@@ -1,80 +1,85 @@
 export enum PageType {
-    home,
-    picked,
-    state,
-    music-house,
-    like,
-    recently,
-    download,
-    singer,
-    theme
+    home,          // 主页
+    picked,        // 精选页面
+    state,         // 状态页面
+    music-house,   // 音乐馆页面
+    like,          // 喜欢页面
+    recently,      // 最近播放页面
+    download,      // 下载页面
+    singer,        // 歌手页面
+    theme          // 主题页面
 }
 
 export struct Page {
-    page-type: PageType,
-    data: string
+    page-type: PageType,   
+    data: string           
 }
-
+ 
+// 定义并导出全局历史记录存储对象，用于管理页面导航
 export global HistoryStore {
-    in-out property <[Page]> pages: [];
-    in-out property <PageType> active-tab: home;
-    in-out property <int> size: self.pages.length;
-
-    callback push(Page);
-    callback pop();
+    in-out property <[Page]> pages: [];             // 可读写属性：页面数组，初始为空
+    in-out property <PageType> active-tab: home;    // 可读写属性：当前激活的页面标签，默认为主页
+    in-out property <int> size: self.pages.length;  // 可读写属性：页面数组的大小，自动计算为 pages 的长度
+    callback push(Page);                            // 回调函数：推入新页面到历史记录
+    callback pop();                                 // 回调函数：从历史记录中弹出最后一个页面
 
     public function go_back() {
-        self.pop();
+        self.pop();  // 移除当前页面
+        // 更新 active-tab：如果数组为空则返回首页，否则取最后一个页面的类型
         self.active-tab = self.pages.length <= 0 ? PageType.home : self.pages[self.size - 1].page-type;
+        // 更新页面位置偏移
         PageBoxStore.set_position_offset(self.active-tab);
     }
 
     public function go_to_with_data(page-type: PageType, data: string) {
-        self.active-tab = page-type;
+        self.active-tab = page-type;  // 设置当前激活页面
+        
+        // 将新页面推入历史记录
         self.push({
             page-type: page-type,
             data: data
         });
+        // 更新页面位置偏移
         PageBoxStore.set_position_offset(page-type);
     }
 
     public function go_to(page-type: PageType) {
-        self.go_to_with_data(page-type, "");
+        self.go_to_with_data(page-type, "");  
     }
-    
 }
 
+// 定义并导出全局页面位置存储对象，用于管理页面位置偏移
 export global PageBoxStore {
+    // 可读写属性：位置偏移值，用于控制页面显示位置
     in-out property <int> position-offset;
 
+    // 公共方法：根据页面类型设置位置偏移值
     public function set_position_offset(page-type: PageType) {
-        
         if HistoryStore.active-tab == PageType.home {
-            self.position-offset = 0;
+            self.position-offset = 0;    
         } else if HistoryStore.active-tab == PageType.picked {
-            self.position-offset = 1;
+            self.position-offset = 1;    
         } else if HistoryStore.active-tab == PageType.state {
-            self.position-offset = 2;
+            self.position-offset = 2;    
         } else if HistoryStore.active-tab == PageType.music-house {
-            self.position-offset = 3;
+            self.position-offset = 3;   
         } else if HistoryStore.active-tab == PageType.like {
-            self.position-offset = 4;
+            self.position-offset = 4;   
         } else if HistoryStore.active-tab == PageType.recently {
-            self.position-offset = 5;
+            self.position-offset = 5;   
         } else if HistoryStore.active-tab == PageType.download {
-            self.position-offset = 6;
+            self.position-offset = 6;   
         } else if HistoryStore.active-tab == PageType.singer {
-            self.position-offset = 7;
+            self.position-offset = 7;   
         } else if HistoryStore.active-tab == PageType.theme {
-            self.position-offset = 8;
+            self.position-offset = 8;   
         }
-
     }
 }
 
 
 export enum ThemeType {
-    default,
+    default,    
     black,
     orange,
     purple,
@@ -82,23 +87,23 @@ export enum ThemeType {
 }
 
 export global ThemeStore {
-    in-out property <ThemeType> current-theme;
-    in-out property <brush> sider-background: #eeeff0;
-    in-out property <brush> mainbox-background: #fff;
-    in-out property <brush> nav-button-background: #DDDDDD;
+    in-out property <ThemeType> current-theme;                  // 可读写属性：当前主题类型，默认未指定具体值（需在其他地方初始化）
+    in-out property <brush> sider-background: #eeeff0;        // 可读写属性：侧边栏背景颜色，默认值为浅灰色
+    in-out property <brush> mainbox-background: #fff;           // 可读写属性：主内容区域背景颜色，默认值为白色
+    in-out property <brush> nav-button-background: #DDDDDD;   // 可读写属性：导航按钮背景颜色，默认值为中灰色
 }
 
 export struct Song {
-    id: int,
-    singer: string,
-    song: string,
-    album: string,
-    path: string,
-    pic-path: string
+    id: int,          // 歌曲的唯一标识符
+    singer: string,   // 歌手名称
+    song: string,     // 歌曲名称
+    album: string,    // 专辑名称
+    path: string,     // 歌曲文件的路径
+    pic-path: string  // 歌曲封面图片的路径
 }
 
 export global SingerSongsStore {
-    in-out property <[Song]> list: [
+    in-out property <[Song]> list: [    // 可读写属性：歌曲列表，初始包含一首示例歌曲
         {
             id: 0,
             singer: "周杰伦",
@@ -239,95 +244,110 @@ export global SingerSongsStore {
 }
 
 
+// 定义并导出全局播放歌曲存储对象，用于管理播放列表和播放状态
 export global PlaySongsStore {
-    in-out property <[Song]> list: [];
-    in-out property <int> current-index: -1;
-    in-out property <int> size: list.length;
-    in-out property <int> song-id: -1;
-    in-out property <bool> has-played;
-    in-out property <int> song-duration;
-    in-out property <bool> process-reset;
-    in-out property <bool> process-stop;
-    in-out property <bool> process-state;
+    
+    in-out property <[Song]> list: [];      // 可读写属性：播放列表，初始为空
+    
+    in-out property <int> current-index: -1;// 可读写属性：当前播放歌曲的索引，-1 表示无歌曲播放
+    
+    in-out property <int> size: list.length;// 可读写属性：播放列表的大小，自动计算为 list 的长度
+    
+    in-out property <int> song-id: -1;      // 可读写属性：当前播放歌曲的 ID，-1 表示无歌曲
+    
+    in-out property <bool> has-played;      // 可读写属性：是否已播放过歌曲
+   
+    in-out property <int> song-duration;     // 可读写属性：当前歌曲的时长（单位未指定，可能为秒或毫秒）
+    
+    in-out property <bool> process-reset;   // 可读写属性：是否重置播放进度
+    
+    in-out property <bool> process-stop;    // 可读写属性：是否停止播放
+    
+    in-out property <bool> process-state;   // 可读写属性：播放进程状态（true 表示播放中，false 表示暂停或停止）
 
-    callback push(song: Song);
-    callback delete(index: int);
-    callback clear();
-    callback pre();
-    callback next();
+    
+    callback push(song: Song);  // 回调函数：向播放列表添加新歌曲
+    
+    callback delete(index: int); // 回调函数：删除指定索引的歌曲
+    
+    callback clear();           // 回调函数：清空播放列表
+    
+    callback pre();             // 回调函数：切换到上一首歌
+    
+    callback next();            // 回调函数：切换到下一首歌
 
-
+    // 公共方法：设置歌曲播放进程状态
     public function set_song_process(flag: bool) {
-        if !flag {
+        if !flag {  // 如果 flag 为 false，表示停止播放
             self.process-stop = true;
-        } else {
-            self.process-reset = true;
-            self.process-stop = false;
-            self.process-state = flag;
+        } else {    // 如果 flag 为 true，表示开始或继续播放
+            self.process-reset = true;      // 重置播放进度
+            self.process-stop = false;      // 取消停止状态
+            self.process-state = flag;      // 更新播放状态
         }
     }
 
     public function set_has_played(is-playing: bool) {
-        self.has-played = is-playing;
+        self.has-played = is-playing;  
     }
 
     public function delete_song(index: int) {
-        PlaySongsStore.delete(index);
+        PlaySongsStore.delete(index);  // 调用回调删除歌曲
 
-        if PlaySongsStore.current-index == -1 {
-            PlaySongsStore.song-id = -1;
-            PlaySongsStore.set_has_played(false);
-            PlaySongsStore.set_song_process(false);
-        } else {
+        if PlaySongsStore.current-index == -1 {  // 如果列表为空
+            PlaySongsStore.song-id = -1;         // 重置歌曲 ID
+            PlaySongsStore.set_has_played(false); // 设置未播放
+            PlaySongsStore.set_song_process(false); // 停止播放进程
+        } else {  // 如果列表仍有歌曲
+            // 更新当前歌曲 ID 为当前索引对应的歌曲 ID
             PlaySongsStore.song-id = PlaySongsStore.list[PlaySongsStore.current-index].id;
-            PlaySongsStore.set_has_played(true);
-            PlaySongsStore.set_song_process(true);
+            PlaySongsStore.set_has_played(true);  // 设置已播放
+            PlaySongsStore.set_song_process(true); // 启动播放进程
         }
     }
 
-
     public function pre_song() {
-        PlaySongsStore.pre();
+        PlaySongsStore.pre();  // 调用回调切换到上一首
 
-        if PlaySongsStore.current-index == -1 {
-            PlaySongsStore.song-id = -1;
-            PlaySongsStore.set_has_played(false);
-            PlaySongsStore.set_song_process(false);
-        } else {
+        if PlaySongsStore.current-index == -1 {  // 如果没有上一首（列表为空或已是第一首）
+            PlaySongsStore.song-id = -1;         // 重置歌曲 ID
+            PlaySongsStore.set_has_played(false); // 设置未播放
+            PlaySongsStore.set_song_process(false); // 停止播放进程
+        } else {  // 如果成功切换到上一首
+            // 更新当前歌曲 ID 为当前索引对应的歌曲 ID
             PlaySongsStore.song-id = PlaySongsStore.list[PlaySongsStore.current-index].id;
-            PlaySongsStore.set_has_played(true);
-            PlaySongsStore.set_song_process(true);
+            PlaySongsStore.set_has_played(true);  // 设置已播放
+            PlaySongsStore.set_song_process(true); // 启动播放进程
         }
-
     }
 
     public function next_song() {
-        PlaySongsStore.next();
+        PlaySongsStore.next();  // 调用回调切换到下一首
         
-        if PlaySongsStore.current-index == -1 {
-            PlaySongsStore.song-id = -1;
-            PlaySongsStore.set_has_played(false);
-            PlaySongsStore.set_song_process(false);
-        } else {
+        if PlaySongsStore.current-index == -1 {  // 如果没有下一首（列表为空或已是最后一首）
+            PlaySongsStore.song-id = -1;         // 重置歌曲 ID
+            PlaySongsStore.set_has_played(false); // 设置未播放
+            PlaySongsStore.set_song_process(false); // 停止播放进程
+        } else {  // 如果成功切换到下一首
+            // 更新当前歌曲 ID 为当前索引对应的歌曲 ID
             PlaySongsStore.song-id = PlaySongsStore.list[PlaySongsStore.current-index].id;
-            PlaySongsStore.set_has_played(true);
-            PlaySongsStore.set_song_process(true);
+            PlaySongsStore.set_has_played(true);  // 设置已播放
+            PlaySongsStore.set_song_process(true); // 启动播放进程
         }
-
     }
 
     public function clear_songs() {
-        PlaySongsStore.clear();
-        PlaySongsStore.song-id = -1;
-        PlaySongsStore.set_has_played(false);
-        PlaySongsStore.set_song_process(false);
+        PlaySongsStore.clear();              // 调用回调清空列表
+        PlaySongsStore.song-id = -1;         // 重置歌曲 ID
+        PlaySongsStore.set_has_played(false); // 设置未播放
+        PlaySongsStore.set_song_process(false); // 停止播放进程
     }
     
     public function push_song_and_id(song: Song, id: int) {
-        PlaySongsStore.song-id = id;
-        PlaySongsStore.push(song);
-        PlaySongsStore.set_has_played(true);
-        PlaySongsStore.set_song_process(true);
+        PlaySongsStore.song-id = id;         // 设置歌曲 ID
+        PlaySongsStore.push(song);           // 将歌曲添加到列表
+        PlaySongsStore.set_has_played(true); // 设置已播放
+        PlaySongsStore.set_song_process(true); // 启动播放进程
     }
 }
 
@@ -335,27 +355,35 @@ export global PlayListStore {
     in-out property <bool> is-show;
 
     public function close() {
-        self.is-show = false;
+        self.is-show = false;   // 将播放列表设置为隐藏状态
     }
 }
 
 export global WindowStore {
-    in-out property <length> app-width: 1150px;
-    in-out property <length> app-height: 720px;
-    callback min();
-    callback max();
-    callback close();
-    callback reset();
+    
+    in-out property <length> app-width: 1150px; // 可读写属性：应用窗口的宽度，默认值为 1150 像素
+    
+    in-out property <length> app-height: 720px; // 可读写属性：应用窗口的高度，默认值为 720 像素
+    
+    callback min();     // 回调函数：最小化窗口
+    
+    callback max();     // 回调函数：最大化窗口
+    
+    callback close();   // 回调函数：关闭窗口
+    
+    callback reset();   // 回调函数：重置窗口（可能恢复默认大小或位置）
 }
 
+// 定义并导出全局黑胶唱片存储对象，用于控制黑胶唱片动画的位置
 export global VinylStore {
-    in-out property <length> position-y: 2000px;
+    
+    in-out property <length> position-y: 2000px;    // 可读写属性：黑胶唱片的 Y 轴位置，默认值为 2000px（可能表示隐藏状态）
 
     public function toggle() {
-        if self.position-y > 0 {
-            self.position-y = 0;
-        } else {
-            self.position-y = 2000px;
+        if self.position-y > 0 {  // 如果当前位置大于 0（隐藏状态）
+            self.position-y = 0;  // 将位置设置为 0（显示状态）
+        } else {                  // 如果当前位置为 0（显示状态）
+            self.position-y = 2000px;  // 将位置设置为 2000px（隐藏状态）
         }
     }
 }

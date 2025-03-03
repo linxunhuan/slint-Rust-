@@ -1,73 +1,88 @@
 import { Icon } from "../components/icon.slint";
 import { QInput } from "../components/input.slint";
 import { PageType, WindowStore, HistoryStore } from "global.slint";
+
 export component ToolBar inherits Rectangle {
-    // background: black;
+
+    // 设置右上角圆角半径为 10 像素
     border-top-right-radius: 10px;
 
+    // 创建一个水平布局容器，用于组织工具栏内容
     HorizontalLayout {
-        alignment: space-between;
-        padding-left: 30px;
-        padding-right: 30px;
+        alignment: space-between; // 子组件两端对齐
+        padding-left: 30px;       // 左内边距 30 像素
+        padding-right: 30px;      // 右内边距 30 像素
 
+        // 定义左侧区域并命名为 left-box
         left-box := Rectangle {
             HorizontalLayout {
-                alignment: start;
-                spacing: 20px;
-                
+                alignment: start;  // 子组件左侧对齐
+                spacing: 20px;     // 子组件间距 20 像素
+
+                // 返回按钮
                 Icon {
-                    source: @image-url("../../assets/left.svg");
+                    source: @image-url("../../assets/left.svg"); 
 
                     clicked => {
-                        HistoryStore.go_back();
+                        HistoryStore.go_back(); // 点击时调用 HistoryStore 的返回方法
                     }
                 }
+                // 刷新按钮
                 Icon {
-                    source: @image-url("../../assets/refresh.svg");
+                    source: @image-url("../../assets/refresh.svg"); 
                 }
 
+                // 搜索输入框
                 QInput {
-                    placeholder: "请输入歌手";
+                    placeholder: "请输入歌手"; 
                 }
             }
         }
 
+        // 定义右侧区域并命名为 right-box
         right-box := Rectangle {
             HorizontalLayout {
-                alignment: space-between;
-                spacing: 20px;
+                alignment: space-between; // 子组件两端对齐
+                spacing: 20px;            // 子组件间距 20 像素
 
+                // 主题切换按钮
                 Icon {
-                    source: @image-url("../../assets/clothes.svg");
+                    source: @image-url("../../assets/clothes.svg"); 
 
                     clicked => {
-                        HistoryStore.go_to(PageType.theme);
+                        HistoryStore.go_to(PageType.theme); 
                     }
                 }
+                
+                // 最小化按钮
                 Icon {
-                    source: @image-url("../../assets/min.svg");
+                    source: @image-url("../../assets/min.svg"); 
                     clicked => {
-                        WindowStore.min();
+                        WindowStore.min(); 
                     }
                 }
+                
+                // 最大化/恢复按钮
                 Icon {
-                    property <bool> has-max;
-                    source: self.has-max ? @image-url("../../assets/reset-max.svg"): @image-url("../../assets/max.svg");
+                    property <bool> has-max; // 定义属性跟踪是否已最大化
+                    
+                    source: self.has-max ? @image-url("../../assets/reset-max.svg") : @image-url("../../assets/max.svg");
                     clicked => {
-                        if !self.has-max {
-                            self.has-max = true;
-                            WindowStore.max();
-                        } else {
-                            self.has-max = false;
-                            WindowStore.reset();
+                        if !self.has-max {          // 如果未最大化
+                            self.has-max = true;    
+                            WindowStore.max();      
+                        } else {                   // 如果已最大化
+                            self.has-max = false;   
+                            WindowStore.reset();    
                         }
-                        
                     }
                 }
+                
+                // 关闭按钮
                 Icon {
-                    source: @image-url("../../assets/close.svg");
+                    source: @image-url("../../assets/close.svg"); 
                     clicked => {
-                        WindowStore.close();
+                        WindowStore.close(); 
                     }
                 }
             }

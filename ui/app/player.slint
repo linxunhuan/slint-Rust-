@@ -3,129 +3,149 @@ import { QTouchArea } from "../components/qtoucharea.slint";
 import { Icon } from "../components/icon.slint";
 import { QSlider } from "../components/qslider.slint";
 import { PlaySongsStore, PlayListStore, VinylStore } from "global.slint";
+
 export component Player inherits Rectangle {
-    background: #FAFAFA;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    
+    background: #FAFAFA;            // 设置背景颜色为浅灰色
+    border-bottom-left-radius: 10px;  // 设置左下角圆角半径为 10 像素
+    border-bottom-right-radius: 10px; // 设置右下角圆角半径为 10 像素
 
+    // 创建一个垂直布局容器，用于组织播放器内容
     VerticalLayout {
-
+        // 定义一个分隔线矩形并命名为 line
         line := Rectangle {
-            height: 1px;
-            background: #eee;
+            height: 1px;          
+            background: #eee;     // 设置背景颜色为浅灰色，作为分隔线
         }
 
+        // 创建一个水平布局，用于显示播放器主要内容
         HorizontalLayout {
-            padding-top: 12px;
-            padding-bottom: 12px;
-            padding-left: 20px;
-            padding-right: 20px;
+            padding-top: 12px;     // 上内边距 12 像素
+            padding-bottom: 12px;  // 下内边距 12 像素
+            padding-left: 20px;    // 左内边距 20 像素
+            padding-right: 20px;   // 右内边距 20 像素
 
             Rectangle {
-
+                // 嵌套水平布局，组织专辑信息、播放控制和播放列表按钮
                 HorizontalLayout {
-                    alignment: space-between;
+                    alignment: space-between; // 子组件两端对齐
 
+                    // 定义专辑信息区域并命名为 album
                     album := Rectangle {
                         HorizontalLayout {
-                            alignment: start;
-                            spacing: 10px;
+                            alignment: start;  // 子组件左侧对齐
+                            spacing: 10px;     // 子组件间距 10 像素
 
+                            // 显示专辑封面图片
                             QImage {
-                                width: 50px;
-                                height: 50px;
-                                border-radius: 5px;
-                                source: @image-url("../../assets/katong8.png");
+                                width: 50px;                        // 宽度 50 像素
+                                height: 50px;                       // 高度 50 像素
+                                border-radius: 5px;                 // 圆角半径 5 像素
+                                source: @image-url("../../assets/katong8.png"); // 加载默认封面图片
                             }
 
+                            // 显示歌曲名和歌手名的垂直布局
                             VerticalLayout {
-                                alignment: space-between;
+                                alignment: space-between; // 子组件垂直分布
+
                                 Text {
-                                    text: "晴天";
-                                    font-size: 20px;
+                                    text: "晴天";       // 歌曲名（此处为硬编码）
+                                    font-size: 20px;    // 字体大小 20 像素
                                 }
                                 Text {
-                                    text: "周杰伦";
-                                    color: gray;
+                                    text: "周杰伦";    // 歌手名（此处为硬编码）
+                                    color: gray;        // 字体颜色为灰色
                                 }
                             }
                         }
 
+                        // 定义触摸区域，用于切换黑胶唱片显示状态
                         QTouchArea {
-                            mouse-cursor: pointer;
+                            mouse-cursor: pointer; // 鼠标悬停时显示手型光标
 
                             clicked => {
-                                VinylStore.toggle();
+                                VinylStore.toggle(); // 点击时切换 VinylStore 的显示/隐藏状态
                             }
                         }
                     }
 
+                    // 定义播放控制区域并命名为 player-box
                     player-box := Rectangle {
                         VerticalLayout {
-                            alignment: space-between;
+                            alignment: space-between; // 子组件垂直分布
 
+                            // 定义播放按钮区域并命名为 player-btn
                             player-btn := Rectangle {
-                                height: 35px;
+                                height: 35px; // 设置高度为 35 像素
 
                                 HorizontalLayout {
-                                    alignment: space-between;
-                                    spacing: 30px;
+                                    alignment: space-between; // 子组件两端对齐
+                                    spacing: 30px;            // 子组件间距 30 像素
 
+                                    // 上一首按钮
                                     Icon {
-                                        source: @image-url("../../assets/pre.svg");
+                                        source: @image-url("../../assets/pre.svg"); // 加载上一首图标
                                         clicked => {
-                                            PlaySongsStore.pre_song();
+                                            PlaySongsStore.pre_song(); // 点击时调用上一首方法
                                         }
                                     }
 
+                                    // 播放/暂停按钮
                                     Image {
-                                        height: player-btn.height;
-                                        width: self.height;
+                                        height: player-btn.height; // 高度与父容器一致
+                                        width: self.height;        // 宽度等于高度（正方形）
+                                        // 根据播放状态动态切换图标
                                         source: PlaySongsStore.has-played ? @image-url("../../assets/pause-big.svg") : @image-url("../../assets/play-big.svg");
-                                        colorize: red;
+                                        colorize: red;            // 图标颜色为红色
 
                                         QTouchArea {
-                                            mouse-cursor: pointer;
+                                            mouse-cursor: pointer; // 鼠标悬停时显示手型光标
 
                                             clicked => {
+                                                // 点击时切换播放/暂停状态
                                                 PlaySongsStore.set_has_played(!PlaySongsStore.has-played);
                                             }
                                         }
                                     }
 
+                                    // 下一首按钮
                                     Icon {
-                                        source: @image-url("../../assets/next.svg");
+                                        source: @image-url("../../assets/next.svg"); // 加载下一首图标
                                         clicked => {
-                                            PlaySongsStore.next_song();
+                                            PlaySongsStore.next_song(); // 点击时调用下一首方法
                                         }
                                     }
                                 }
                             }
 
+                            // 定义播放进度条区域并命名为 slider
                             slider := Rectangle {
                                 QSlider {
-                                    width: 300px;
-                                    height: 6px;
+                                    width: 300px;  
+                                    height: 6px;   
                                 }
                             }
                         }
                     }
 
+                    // 定义播放列表控制区域并命名为 playlist
                     playlist := Rectangle {
                         HorizontalLayout {
-                            spacing: 20px;
+                            spacing: 20px; // 子组件间距 20 像素
 
+                            // 音量图标
                             voice := Icon {
-                                width: 20px;
-                                source: @image-url("../../assets/voice.svg");
+                                width: 20px;                       
+                                source: @image-url("../../assets/voice.svg"); // 加载音量图标
                             }
 
-                        
+                            // 播放列表菜单按钮并命名为 menu
                             menu := Icon {
-                                width: 20px;
-                                source: @image-url("../../assets/menu.svg");
+                                width: 20px;                       
+                                source: @image-url("../../assets/menu.svg"); // 加载菜单图标
 
                                 clicked => {
+                                    // 点击时切换播放列表的显示/隐藏状态
                                     PlayListStore.is-show = !PlayListStore.is-show;
                                 }
                             }

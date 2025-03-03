@@ -1,48 +1,60 @@
 import { QTouchArea } from "qtoucharea.slint";
 import { PageType, ThemeStore } from "../app/global.slint";
+
 export component NavButton inherits Rectangle {
-    in property <PageType> page-type;
-    in property <string> text;
-    in property <image> icon;
-    in property <bool> is-active;
+    
+    in property <PageType> page-type;   // 定义输入属性 page-type，用于指定按钮关联的页面类型（来自 PageType）
+    in property <string> text;          // 定义输入属性 text，用于设置按钮的文本内容
+    in property <image> icon;           // 定义输入属性 icon，用于指定按钮的图标（类型为 image）
+    in property <bool> is-active;       // 定义输入属性 is-active，用于表示按钮是否处于激活状态
+
     callback clicked();
 
     width: 170px;
     height: 36px;
     border-radius: 5px;
 
+    // 定义一个水平布局，用于排列按钮内部的图标和文本
     HorizontalLayout {
-        padding-left: 10px;
-        padding-right: 10px;
-        spacing: 5px;
+        
+        padding-left: 10px;     // 设置左侧内边距为 10 像素
+        padding-right: 10px;    // 设置右侧内边距为 10 像素
+        spacing: 5px;           // 设置布局中子项之间的间距为 5 像素
 
+        // 定义一个垂直布局，用于在垂直方向上居中排列图标
         VerticalLayout {
             alignment: center;
 
+            // 定义一个图标元素，命名为 icon
             icon := Image {
-                height: root.height / 2;
-                width: self.height;
+                height: root.height / 2;    // 设置图标高度为按钮高度的一半
+                width: self.height;         // 设置图标宽度等于其高度，形成正方形
                 source: root.icon;
-            }    
+            }
         }
-        
 
+        // 定义一个文本元素，命名为 nav-name，用于显示按钮文本
         nav-name := Text {
-            text: root.text;
-            vertical-alignment: center;
+            
+            text: root.text;            // 设置文本内容，使用根节点的 text 属性
+            vertical-alignment: center; // 设置文本在垂直方向上居中对齐
             color: #9b9797;
             font-size: 14px;
         }
     }
 
+    // 定义状态机，根据 is-active 属性切换按钮样式
     states [
+
         active when is-active: {
-            root.background: ThemeStore.nav-button-background;
+            
+            root.background: ThemeStore.nav-button-background;  // 设置按钮背景颜色，使用 ThemeStore 中的导航按钮背景色
             icon.colorize: #000;
             nav-name.color: #333;
         }
     ]
 
+    // 定义一个触摸区域，覆盖整个按钮，用于处理点击事件
     QTouchArea {
         mouse-cursor: pointer;
 

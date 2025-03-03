@@ -2,91 +2,113 @@ import { Icon } from "../components/icon.slint";
 import { ScrollView } from "std-widgets.slint";
 import { PlaySongsStore } from "global.slint";
 import { QTouchArea } from "../components/qtoucharea.slint";
-export component PlayList inherits Rectangle {
 
+export component PlayList inherits Rectangle {
     width: 300px;
     height: 400px;
-    border-radius: 10px;
+    border-radius: 10px;    // 设置圆角半径为 10 像素
     background: #fff;
-    drop-shadow-blur: 20px;
-    drop-shadow-color: gray;
-    drop-shadow-offset-x: -10px;
-    drop-shadow-offset-y: 10px;
+    drop-shadow-blur: 20px; // 设置阴影模糊半径为 20 像素
+    drop-shadow-color: gray;// 设置阴影颜色为灰色
+    drop-shadow-offset-x: -10px;    // 设置阴影在 X 轴上的偏移为 -10 像素（向左）
+    drop-shadow-offset-y: 10px;     // 设置阴影在 Y 轴上的偏移为 10 像素（向下）
 
+    // 定义一个空的触摸区域（可能是占位符，当前无功能）
     QTouchArea {
-
     }
 
+    // 创建一个垂直布局容器，用于组织播放列表内容
     VerticalLayout {
-        padding: 20px;
-        spacing: 20px;
+        
+        padding: 20px;  // 设置内边距为 20 像素（四周均适用）
+        spacing: 20px;  // 设置子组件之间的间距为 20 像素
 
+        // 创建一个水平布局，用于显示标题和删除所有歌曲的按钮
         HorizontalLayout {
-            height: 20px;
-            alignment: space-between;
+            
+            height: 20px;               // 设置高度为 20 像素
+            alignment: space-between;   // 设置子组件在水平方向上两端对齐
 
+            // 显示“全部歌曲”文本
             Text {
-                text: "全部歌曲";
-                vertical-alignment: center;
+                text: "全部歌曲";         
+                vertical-alignment: center; // 垂直居中对齐
             }
 
+            // 定义删除所有歌曲的图标并命名为 del-all
             del-all := Icon {
-                width: 16px;
-                source: @image-url("../../assets/delete.svg");
+                width: 16px;                                   // 设置图标宽度为 16 像素
+                source: @image-url("../../assets/delete.svg"); // 加载删除图标资源
 
                 clicked => {
-                    PlaySongsStore.clear_songs();
+                    PlaySongsStore.clear_songs();     // 调用 PlaySongsStore 的清空方法
                 }
             }
         }
 
+        // 创建一个滚动视图，用于显示歌曲列表
         ScrollView {
-            horizontal-stretch: 1;
-            vertical-scrollbar-policy: ScrollBarPolicy.always-off;
+            
+            horizontal-stretch: 1;  // 设置水平拉伸因子为 1，占满可用宽度
+            
+            vertical-scrollbar-policy: ScrollBarPolicy.always-off;  // 禁用垂直滚动条，始终隐藏
 
+            // 在滚动视图内创建一个垂直布局，用于排列歌曲项
             VerticalLayout {
-                spacing: 20px;
-                alignment: start;
+                spacing: 20px;       // 子组件间距为 20 像素
+                alignment: start;    // 子组件从顶部开始排列
 
+                // 使用 for 循环遍历 PlaySongsStore.list，生成歌曲项
                 for item[index] in PlaySongsStore.list: song := Rectangle {
-                    
+                    // 每个歌曲项是一个矩形容器
+
+                    // 创建水平布局，显示歌曲信息和删除按钮
                     HorizontalLayout {
-                        height: 20px;
-                        alignment: space-between;
+                        height: 20px;             // 设置高度为 20 像素
+                        alignment: space-between; // 子组件两端对齐
 
+                        // 定义歌曲名称区域并命名为 song-name
                         song-name := HorizontalLayout {
-                            spacing: 10px;
+                            spacing: 10px;       // 子组件间距为 10 像素
 
+                            // 显示“喜欢”图标
                             Icon {
-                                width: 16px;
-                                source: @image-url("../../assets/like.svg");
+                                width: 16px;                        // 设置图标宽度为 16 像素
+                                source: @image-url("../../assets/like.svg"); // 加载喜欢图标资源
                             }
 
+                            // 显示歌手和歌曲名称的文本
                             Text {
-                                text: item.singer + " - " + item.song;
-                                color: PlaySongsStore.current-index == index ? red : gray;
-                                vertical-alignment: center;
+                                
+                                text: item.singer + " - " + item.song;  // 拼接歌手名和歌曲名，格式如“歌手 - 歌曲”
+                                
+                                color: PlaySongsStore.current-index == index ? red : gray;  // 根据当前播放索引设置颜色：当前播放为红色，否则为灰色
+                                vertical-alignment: center;             // 垂直居中对齐
 
+                                // 定义触摸区域，用于处理点击事件
                                 QTouchArea {
-                                    mouse-cursor: pointer;
+                                    mouse-cursor: pointer; // 鼠标悬停时显示手型光标
 
+                                    // 点击事件：播放选中的歌曲
                                     clicked => {
-                                        PlaySongsStore.current-index = index;
-                                        PlaySongsStore.song-id = item.id;
-                                        PlaySongsStore.set_has_played(true);
-                                        PlaySongsStore.push(item);
-                                        PlaySongsStore.set_song_process(true);
+                                        PlaySongsStore.current-index = index; // 更新当前播放索引
+                                        PlaySongsStore.song-id = item.id;     // 更新当前歌曲 ID
+                                        PlaySongsStore.set_has_played(true);  // 设置已播放状态
+                                        PlaySongsStore.push(item);            // 将歌曲添加到播放列表
+                                        PlaySongsStore.set_song_process(true); // 启动播放进程
                                     }
                                 }
                             }
                         }
 
+                        // 定义删除单首歌曲的图标并命名为 del-song
                         del-song := Icon {
-                            width: 16px;
-                            source: @image-url("../../assets/delete.svg");
+                            width: 16px;                          // 设置图标宽度为 16 像素
+                            source: @image-url("../../assets/delete.svg"); // 加载删除图标资源
 
+                            // 点击事件：删除当前歌曲
                             clicked => {
-                                PlaySongsStore.delete_song(index);
+                                PlaySongsStore.delete_song(index); // 调用 PlaySongsStore 的删除方法
                             }
                         }
                     }

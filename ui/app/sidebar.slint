@@ -1,115 +1,131 @@
 import { NavButton } from "../components/nav-button.slint";
 import {  PageType, ThemeStore, HistoryStore} from "global.slint";
+
 export component SideBar inherits Rectangle {
+    // 设置组件宽度为 210 像素
     width: 210px;
+    // 设置背景颜色，从 ThemeStore 获取侧边栏背景色
     background: ThemeStore.sider-background;
+    // 设置左上角圆角半径为 10 像素
     border-top-left-radius: 10px;
 
+    // 创建一个垂直布局容器，用于组织侧边栏内容
     VerticalLayout {
-        alignment: start;
-        padding-top: 25px;
-        padding-left: 20px;
-        padding-right: 20px;
-        spacing: 20px;
+        alignment: start;      // 子组件从顶部开始排列
+        padding-top: 25px;     // 上内边距 25 像素
+        padding-left: 20px;    // 左内边距 20 像素
+        padding-right: 20px;   // 右内边距 20 像素
+        spacing: 20px;         // 子组件间距 20 像素
 
+        // 定义应用标志区域并命名为 logo
         logo := Rectangle {
-            height: 30px;
+            height: 30px;      // 设置高度为 30 像素
 
             HorizontalLayout {
-                alignment: start;
-                spacing: 5px;
+                alignment: start;  // 子组件左侧对齐
+                spacing: 5px;      // 子组件间距 5 像素
 
+                // 定义标志图片区域并命名为 logo-pic
                 logo-pic := Rectangle {
-                    width: logo.height;
-                    border-radius: 5px;
-                    clip: true;
+                    width: logo.height; // 宽度与父容器高度一致（正方形）
+                    border-radius: 5px; // 圆角半径 5 像素
+                    clip: true;         // 启用裁剪，超出部分隐藏
 
                     Image {
-                        height: parent.height;
-                        width: self.height;
-                        source: @image-url("../../assets/logo.png");
+                        height: parent.height; // 高度与父容器一致
+                        width: self.height;    // 宽度等于高度（正方形）
+                        source: @image-url("../../assets/logo.png"); // 加载标志图片
                     }
                 }
 
+                // 显示应用名称文本
                 Text {
-                    text: "猩猩音乐(卡通版)";
-                    font-size: 16px;
-                    vertical-alignment: center;
+                    text: "寻欢音乐"; // 应用名称
+                    font-size: 16px;           // 字体大小 16 像素
+                    vertical-alignment: center; // 垂直居中对齐
                 }
             }
         }
 
+        // 定义应用导航区域并命名为 app-nav
         app-nav := VerticalLayout {
-            alignment: start;
-            spacing: 3px;
+            alignment: start;  // 子组件从顶部开始排列
+            spacing: 3px;      // 子组件间距 3 像素
 
+            // 推荐页面导航按钮
             NavButton {
-                page-type: PageType.home;
-                text: "推荐";
-                icon: @image-url("../../assets/home.svg");
+                page-type: PageType.home; // 页面类型为首页
+                text: "推荐";             
+                icon: @image-url("../../assets/home.svg"); 
+                // 根据 HistoryStore 的当前标签判断是否激活
                 is-active: HistoryStore.active-tab == self.page-type;
                 clicked => {
-                    HistoryStore.go_to(self.page-type);
+                    HistoryStore.go_to(self.page-type); 
                 }
             }
             NavButton {
-                text: "精选";
-                page-type: PageType.picked;
-                icon: @image-url("../../assets/star.svg");
+                text: "精选";             /
+                page-type: PageType.picked; 
+                icon: @image-url("../../assets/star.svg"); 
                 is-active: HistoryStore.active-tab == self.page-type;
                 clicked => {
-                    HistoryStore.go_to(self.page-type);
+                    HistoryStore.go_to(self.page-type); 
                 }
             }
             NavButton {
-                text: "动态";
-                page-type: PageType.state;
-                icon: @image-url("../../assets/chat.svg");
+                text: "动态";             
+                page-type: PageType.state; 
+                icon: @image-url("../../assets/chat.svg"); 
                 is-active: HistoryStore.active-tab == self.page-type;
                 clicked => {
-                    HistoryStore.go_to(self.page-type);
+                    HistoryStore.go_to(self.page-type); 
                 }
             }
             NavButton {
-                text: "乐馆";
-                page-type: PageType.music-house;
-                icon: @image-url("../../assets/music.svg");
+                text: "乐馆";            
+                page-type: PageType.music-house; 
+                icon: @image-url("../../assets/music.svg"); 
                 is-active: HistoryStore.active-tab == self.page-type;
                 clicked => {
-                    HistoryStore.go_to(self.page-type);
+                    HistoryStore.go_to(self.page-type); 
                 }
             }
         }
 
+        // 定义分隔线并命名为 line
         line := Rectangle {
-            height: 1px;
-            background: #E4E8EC;
+            height: 1px;          // 设置高度为 1 像素
+            background: #E4E8EC;  // 设置背景颜色为浅灰色，作为分隔线
         }
 
+        // 定义我的导航区域并命名为 my-nav
         my-nav := VerticalLayout {
-            alignment: start;
-            spacing: 3px;
+            alignment: start;  // 子组件从顶部开始排列
+            spacing: 3px;      // 子组件间距 3 像素
 
+            // 使用 for 循环生成导航按钮，基于静态数据数组
             for item in [{
-                page-type: PageType.like,
-                text: "我的点赞",
-                icon: @image-url("../../assets/like.svg"),
+                page-type: PageType.like,         
+                text: "我的点赞",                 
+                icon: @image-url("../../assets/like.svg"), 
             },{
-                page-type: PageType.recently,
-                text: "最近播放",
-                icon: @image-url("../../assets/time.svg")
+                page-type: PageType.recently,     
+                text: "最近播放",                
+                icon: @image-url("../../assets/time.svg") 
             },{
-                page-type: PageType.download,
-                text: "本地下载",
-                icon: @image-url("../../assets/download.svg")
+                page-type: PageType.download,     
+                text: "本地下载",                
+                icon: @image-url("../../assets/download.svg") 
             },]: NavButton {
-                page-type: item.page-type;
-                text: item.text;
-                icon: item.icon;
+                page-type: item.page-type; // 设置页面类型
+                text: item.text;           // 设置按钮文本
+                icon: item.icon;           // 设置图标
+                
+                // 根据 HistoryStore 的当前标签判断是否激活
                 is-active: HistoryStore.active-tab == item.page-type;
 
                 clicked => {
-                    HistoryStore.go_to(self.page-type);
+                    HistoryStore.go_to(self.page-type); // 点击时导航到对应页面
                 }
             }
         }
